@@ -7,6 +7,28 @@ require_once('init_admin_auth.php');
 // DBへの接続
 $dbh = db_connect($config);
 
+/*
+ * 検索条件の確認
+ */
+$where = [];
+$where_data = [];
+$find_uri_params = [];
+// 「名前」の検索
+$find_name = (string)@$_GET['find_name'];
+//var_dump($find_name);
+if ('' !== $find_name) {
+    // SQLのWHERE句作成用
+    $where[] = 'name LIKE :find_name';
+    $where_data[':find_name'] = "%{$find_name}%";
+    // URIのパラメタ作成用
+    $find_uri_params['find_name'] = $find_name;
+    // テンプレートへのアサイン
+    $smarty_obj->assign('find_name', $find_name);
+}
+
+/*
+ * sort
+ */
 // sort用ホワイトリスト
 $sort_list = [
     'id'         => 'id',
@@ -27,11 +49,22 @@ if (isset($sort_list[$sort_wk])) {
     $sort = 'created_at DESC';
 }
 
+// 検索条件の保存
+$smarty_obj->assign('find_query', http_build_query($find_uri_params));
+
 // プリペアドステートメントの作成
-$sql = 'SELECT * FROM inquiry ORDER BY ' . $sort .' LIMIT 0, 20;';
+$sql = 'SELECT * FROM inquiry';
+if ([] !== $where) {
+    $sql .= ' WHERE ' . implode(' AND ', $where);
+}
+$sql .= ' ORDER BY ' . $sort .' LIMIT 0, 20;';
 $pre = $dbh->prepare($sql);
+
 // 値をバインド
-// XXX 今回は(一旦)なし
+foreach($where_data  as  $k => $v) {
+    $pre->bindValue($k, $v); // XXX 全部stringなので第三引数は色々省略
+}
+
 // SQLの実行
 $r = $pre->execute();
 
