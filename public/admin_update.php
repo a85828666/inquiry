@@ -17,7 +17,7 @@ if ('' === $token) {
     $error_flg['csrf_error'] = 1;
 }
 // tokenの比較
-if ($_SESSION['admin_csrf'] !== $token) {
+if ($_SESSION['admin_csrf'] !== $token) { // XXX hash_equals
     $error_flg['csrf_error'] = 1;
 }
 unset($_SESSION['admin_csrf']); // 一回使い切り

@@ -2,17 +2,25 @@
 //
 require_once('init_admin_auth.php');
 
+//var_dump($_GET);
+
 // DBへの接続
 $dbh = db_connect($config);
 
 // sort用ホワイトリスト
 $sort_list = [
-    'id' => 'id',
-    'id_d' => 'id DESC',
-    // XXXXXX 追加あり
+    'id'         => 'id',
+    'id_d'       => 'id DESC',
+    'name'       => 'name',
+    'name_d'     => 'name DESC',
+    'created'    => 'created_at',
+    'created_d'  => 'created_at DESC',
+    'response'   => 'response_at',
+    'response_d' => 'response_at DESC',
 ];
 // ソート内容の把握
 $sort_wk = (string)@$_GET['sort'];
+$smarty_obj->assign('sort', $sort_wk);
 if (isset($sort_list[$sort_wk])) {
     $sort = $sort_list[$sort_wk];
 } else {
@@ -34,9 +42,4 @@ $smarty_obj->assign('data', $data);
 // 出力
 $tmp_filename = 'admin_list.tpl';
 require_once('./fin.php');
-
-
-
-
-
 

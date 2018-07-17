@@ -10,6 +10,18 @@
 <h1>問い合わせ一覧</h1>
 {* $data|var_dump *}
 
+<h2>検索</h2>
+<form action="admin_list.php" method="get">
+<input type="hidden" name="sort" value="{$sort}">
+<label><input name="find_no_response" type="checkbox">「返信していない」もの</label><br>
+名前：<input name="find_name" ><br>
+連絡先：<input name="find_address" ><br>
+作成日：<input name="find_created_from" >～<input name="find_created_to" ><br>
+<br>
+<button>検索する</button>
+</form>
+
+<h2>一覧</h2>
 <table class="table table-hover">
 <tr>
   <th>ID<a href="./admin_list.php?sort=id_d">▼</a>
